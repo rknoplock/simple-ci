@@ -1,6 +1,6 @@
 # 🚀 Simple CI Pipeline
 
-Este repositório contém um pipeline **CI/CD** automatizado utilizando **GitHub Actions** e **Docker Hub**. O objetivo é realizar a **integração contínua (CI)** de forma eficiente.
+Este repositório contém um pipeline **CI** automatizado utilizando **GitHub Actions** e **Docker Hub**. O objetivo é realizar a **integração contínua (CI)** de forma eficiente.
 
 ---
 
