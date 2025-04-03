@@ -82,6 +82,10 @@ jobs:
 
       - name: Criando Tag e Release
         run: |
+          
+          TZ="America/Sao_Paulo"  # Define o fuso horário para São Paulo (BRT)
+          export TZ
+          
           TAG_NAME=$(date +'%Y-%m-%d-%H%M')
           RELEASE_TITLE="Release $(date +'%Y-%m-%d %H:%M')"
           
