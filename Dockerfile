@@ -5,9 +5,10 @@ FROM node:18
 WORKDIR /app
 
 # Copiar arquivos para dentro do container
-COPY package.json package-lock.json ./
-RUN npm install
+COPY package*.json ./
 
+# Instala as dependências
+RUN npm install --only=production
 # Copiar código-fonte
 COPY . .
 
