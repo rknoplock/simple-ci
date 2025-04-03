@@ -1,4 +1,4 @@
-name: CI Pipeline
+name: CI/CD Pipeline
 
 on:
   push:
@@ -37,8 +37,8 @@ jobs:
 
       - name: Iniciando o empacotamento da aplicacao com Docker
         run: |
-          REPO_NAME=$(basename "${{ github.repository }}")  
-          BRANCH_NAME="${{ github.ref_name }}"
+          REPO_NAME=$(echo "${{ github.repository }}" | cut -d'/' -f2)  # Extrai o nome do repositório
+          BRANCH_NAME=${{ github.ref_name }}
 
           if [[ "$BRANCH_NAME" == "staging" ]]; then
             TAG="staging"
@@ -52,13 +52,27 @@ jobs:
           echo "Construindo imagem ${{ secrets.DOCKER_USERNAME }}/$REPO_NAME:$TAG"
 
           docker build -t ${{ secrets.DOCKER_USERNAME }}/$REPO_NAME:$TAG .
-
+      
       - name: Iniciando o envio da imagem para o DockerHub
         run: |
+          REPO_NAME=$(echo "${{ github.repository }}" | cut -d'/' -f2)  # Extrai o nome do repositório
+          BRANCH_NAME=${{ github.ref_name }}
+
+          if [[ "$BRANCH_NAME" == "staging" ]]; then
+            TAG="staging"
+          elif [[ "$BRANCH_NAME" == "production" ]]; then
+            TAG="production"
+          else
+            echo "Branch inválida para deploy."
+            exit 1
+          fi
+
+          echo "Construindo imagem ${{ secrets.DOCKER_USERNAME }}/$REPO_NAME:$TAG"
+          
           docker push ${{ secrets.DOCKER_USERNAME }}/$REPO_NAME:$TAG
 
   release:
-    name: Create Release
+    name: Release
     needs: cd  # Só roda se o CD for bem-sucedido
     runs-on: ubuntu-latest
 
@@ -66,7 +80,7 @@ jobs:
       - name: Checkout código
         uses: actions/checkout@v3
 
-      - name: Criar Tag e Release
+      - name: Criando Tag e Release
         run: |
           TAG_NAME=$(date +'%Y-%m-%d-%H%M')
           RELEASE_TITLE="Release $(date +'%Y-%m-%d %H:%M')"
