@@ -1,5 +1,5 @@
 const request = require('supertest');
-const app = require('./app'); // Importa o app corretamente
+const app = require('./app');
 
 test('GET / retorna Hello, CI/CD!', async () => {
   const response = await request(app).get('/');
