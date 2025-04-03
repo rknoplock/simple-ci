@@ -1,19 +1,20 @@
-# Usa uma imagem oficial do Node.js como base
+# Usa uma imagem base do Node.js
 FROM node:18
 
-# Define o diretório de trabalho
+# Define o diretório de trabalho no container
 WORKDIR /app
 
-# Copia os arquivos para o container
+# Copia apenas os arquivos essenciais para evitar cache excessivo
 COPY package*.json ./
-RUN npm install
 
-# Copia o restante dos arquivos
+# Instala as dependências
+RUN npm install --only=production
+
+# Copia o restante dos arquivos do projeto
 COPY . .
 
-# Expõe a porta da aplicação
+# Expõe a porta do aplicativo
 EXPOSE 3000
 
-# Comando para rodar a aplicação
+# Define o comando para rodar a aplicação
 CMD ["npm", "start"]
-
