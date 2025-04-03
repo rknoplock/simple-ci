@@ -8,7 +8,7 @@ on:
 
 jobs:
   ci:
-    name: Run Tests
+    name: Code Tests & Validation
     runs-on: ubuntu-latest
 
     steps:
@@ -35,7 +35,7 @@ jobs:
       - name: Login no Docker Hub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-      - name: Construir e enviar imagem para Docker Hub
+      - name: Iniciando o empacotamento da aplicacao com Docker
         run: |
           REPO_NAME=$(echo "${{ github.repository }}" | cut -d'/' -f2)  # Extrai o nome do repositório
           BRANCH_NAME=${{ github.ref_name }}
@@ -52,4 +52,21 @@ jobs:
           echo "Construindo imagem ${{ secrets.DOCKER_USERNAME }}/$REPO_NAME:$TAG"
 
           docker build -t ${{ secrets.DOCKER_USERNAME }}/$REPO_NAME:$TAG .
+      
+      - name: Iniciando o envio da imagem para o DockerHub
+        run: |
+          REPO_NAME=$(echo "${{ github.repository }}" | cut -d'/' -f2)  # Extrai o nome do repositório
+          BRANCH_NAME=${{ github.ref_name }}
+
+          if [[ "$BRANCH_NAME" == "staging" ]]; then
+            TAG="staging"
+          elif [[ "$BRANCH_NAME" == "production" ]]; then
+            TAG="production"
+          else
+            echo "Branch inválida para deploy."
+            exit 1
+          fi
+
+          echo "Construindo imagem ${{ secrets.DOCKER_USERNAME }}/$REPO_NAME:$TAG"
+          
           docker push ${{ secrets.DOCKER_USERNAME }}/$REPO_NAME:$TAG
