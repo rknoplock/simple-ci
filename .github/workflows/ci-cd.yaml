@@ -70,3 +70,31 @@ jobs:
           echo "Construindo imagem ${{ secrets.DOCKER_USERNAME }}/$REPO_NAME:$TAG"
           
           docker push ${{ secrets.DOCKER_USERNAME }}/$REPO_NAME:$TAG
+
+  release:
+    name: Release
+    needs: cd  # Só roda se o CD for bem-sucedido
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v3
+
+      - name: Criando Tag e Release
+        run: |
+          
+          TZ="America/Sao_Paulo"  # Define o fuso horário para São Paulo (BRT)
+          export TZ
+          
+          TAG_NAME=$(date +'%Y-%m-%d-%H%M')
+          RELEASE_TITLE="Release $(date +'%Y-%m-%d %H:%M')"
+          
+          echo "Criando tag e release: $TAG_NAME"
+          
+          git tag $TAG_NAME
+          git push origin $TAG_NAME
+
+          gh release create $TAG_NAME --title "$RELEASE_TITLE" --notes "Gerado automaticamente pelo CI/CD"
+
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
