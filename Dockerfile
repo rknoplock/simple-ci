@@ -1,19 +1,12 @@
-# Usar imagem oficial do Node.js
-FROM node:18
+# Use a imagem oficial do Nginx como base
+FROM nginx:alpine
 
-# Criar diretório de trabalho
-WORKDIR /app
+# Copiar o arquivo HTML da pasta src para o diretório do Nginx
+COPY src/index.html /usr/share/nginx/html/index.html
 
-# Copiar arquivos para dentro do container
-COPY package*.json ./
+# Exponha a porta 80
+EXPOSE 80
 
-# Instala as dependências
-RUN npm install --only=production
-# Copiar código-fonte
-COPY . .
+# Comando padrão para rodar o Nginx
+CMD ["nginx", "-g", "daemon off;"]
 
-# Expor a porta do container
-EXPOSE 3000
-
-# Comando de execução
-CMD ["node", "src/server.js"]

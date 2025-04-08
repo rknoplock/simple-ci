@@ -1,17 +1,14 @@
-{
-  "name": "ci-cd-app",
-  "version": "1.0.0",
-  "description": "Aplicação simples para testar CI/CD",
-  "main": "src/server.js",
-  "scripts": {
-    "start": "node src/server.js",
-    "test": "jest --roots src"
-  },
-  "dependencies": {
-    "express": "^4.18.2"
-  },
-  "devDependencies": {
-    "jest": "^29.0.0",
-    "supertest": "^6.3.0"
+  {
+    "name": "pagina-simples",
+    "version": "1.0.0",
+    "description": "Um site simples para testar o Docker",
+    "main": "index.js",
+    "scripts": {
+      "validate": "npx html-validator --file=src/index.html"
+    },
+    "dependencies": {},
+    "devDependencies": {
+      "html-validator": "^5.1.0"
+    }
   }
-}
+  
