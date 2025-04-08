@@ -1,4 +1,4 @@
-name: CI/CD Pipeline
+name: CI Pipeline
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
       - production
 
 jobs:
-  ci:
+  test:
     name: Code Tests & Validation
     runs-on: ubuntu-latest
 
@@ -24,9 +24,9 @@ jobs:
         run: npx htmlhint '**/*.html'
   
   
-  cd:
+  build:
     name: Build & Push Docker Image
-    needs: ci  # Só roda se o CI passar
+    needs: test  # Só roda se o CI passar
     runs-on: ubuntu-latest
 
     steps:
@@ -74,7 +74,7 @@ jobs:
 
   release:
     name: Release
-    needs: cd  # Só roda se o CD for bem-sucedido
+    needs: build  # Só roda se o CD for bem-sucedido
     runs-on: ubuntu-latest
 
     steps:
