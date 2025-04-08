@@ -4,10 +4,10 @@
   "description": "Um site simples para testar o Docker",
   "main": "index.js",
   "scripts": {
-    "validate": "html-validator --file=src/index.html"
+    "validate": "npx html-validator --file=src/index.html"
   },
-  "dependencies": {
+  "dependencies": {},
+  "devDependencies": {
     "html-validator": "^5.1.0"
-  },
-  "devDependencies": {}
+  }
 }
