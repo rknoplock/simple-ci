@@ -34,7 +34,7 @@ jobs:
       # Rodar validação do HTML
       - name: Validate HTML
         run: |
-          npm run validate
+          npx html-validator --file src/index.html
 
   cd:
     name: Build & Push Docker Image
