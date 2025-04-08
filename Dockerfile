@@ -9,3 +9,4 @@ EXPOSE 80
 
 # Comando padrão para rodar o Nginx
 CMD ["nginx", "-g", "daemon off;"]
+
