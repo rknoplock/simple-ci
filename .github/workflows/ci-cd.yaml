@@ -12,16 +12,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout código
-        uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-      - name: Instalar dependências
+      # Configurar Node.js (para rodar o comando de validação)
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      # Instalar dependências
+      - name: Install dependencies
         run: |
           npm install
 
-      - name: Executar testes
+      # Rodar validação do HTML
+      - name: Validate HTML
         run: |
-          npm test
+          npm run validate
 
   cd:
     name: Build & Push Docker Image
@@ -35,7 +43,7 @@ jobs:
       - name: Login no Docker Hub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-      - name: Iniciando o empacotamento da aplicacao com Docker
+      - name: Iniciando o empacotamento da aplicação com Docker
         run: |
           REPO_NAME=$(echo "${{ github.repository }}" | cut -d'/' -f2)  # Extrai o nome do repositório
           BRANCH_NAME=${{ github.ref_name }}
@@ -52,7 +60,7 @@ jobs:
           echo "Construindo imagem ${{ secrets.DOCKER_USERNAME }}/$REPO_NAME:$TAG"
 
           docker build -t ${{ secrets.DOCKER_USERNAME }}/$REPO_NAME:$TAG .
-      
+
       - name: Iniciando o envio da imagem para o DockerHub
         run: |
           REPO_NAME=$(echo "${{ github.repository }}" | cut -d'/' -f2)  # Extrai o nome do repositório
@@ -68,7 +76,7 @@ jobs:
           fi
 
           echo "Construindo imagem ${{ secrets.DOCKER_USERNAME }}/$REPO_NAME:$TAG"
-          
+
           docker push ${{ secrets.DOCKER_USERNAME }}/$REPO_NAME:$TAG
 
   release:
@@ -84,13 +92,13 @@ jobs:
         run: |
           TZ="America/Sao_Paulo"  # Define o fuso horário para São Paulo (BRT)
           export TZ
-          
+
           BRANCH_NAME=$(echo "${{ github.ref_name }}" | sed 's/\//-/g')  # Pega o nome da branch e remove '/'
           TAG_NAME="${BRANCH_NAME}-$(date +'%Y-%m-%d-%H%M')"
           RELEASE_TITLE="Release ${BRANCH_NAME} - $(date +'%Y-%m-%d %H:%M')"
 
           echo "Criando tag e release: $TAG_NAME"
-          
+
           git tag $TAG_NAME
           git push origin $TAG_NAME
 
