@@ -15,7 +15,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # Configurar Node.js (para rodar o comando de validação)
+      # Configurar Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
@@ -25,6 +25,11 @@ jobs:
       - name: Install dependencies
         run: |
           npm install
+
+      # Verificar pacotes instalados
+      - name: Check installed npm packages
+        run: |
+          npm list html-validator
 
       # Rodar validação do HTML
       - name: Validate HTML
