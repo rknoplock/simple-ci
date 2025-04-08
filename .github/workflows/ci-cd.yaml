@@ -20,22 +20,10 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '14'
-
-      # Instalar dependências
-      - name: Install dependencies
-        run: |
-          npm install
-
-      # Verificar pacotes instalados
-      - name: Check installed npm packages
-        run: |
-          npm list html-validator
-
-      # Rodar validação do HTML
       - name: Validate HTML
-        run: |
-          npx html-validator --file src/index.html
-
+        run: npx htmlhint '**/*.html
+  
+  
   cd:
     name: Build & Push Docker Image
     needs: ci  # Só roda se o CI passar
